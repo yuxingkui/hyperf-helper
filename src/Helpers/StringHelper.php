@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yxk\Helpers;
+namespace Yuxk\Helpers;
 
 class StringHelper
 {

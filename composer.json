@@ -6,8 +6,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Yxk\\": "src/",
-            "Yxk\\Helpers\\": "src/Helpers"
+            "Yuxk\\": "src/",
+            "Yuxk\\Helpers\\": "src/Helpers"
         }
     },
     "authors": [
