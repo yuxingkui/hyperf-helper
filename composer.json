@@ -1,6 +1,6 @@
 {
-    "name": "yxk/helper",
-    "type": "1",
+    "name": "yuxk/helper",
+    "license": "MIT",
     "require": {
         "php": ">=7.0"
     },
