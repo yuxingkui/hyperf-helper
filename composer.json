@@ -1,0 +1,19 @@
+{
+    "name": "yxk/helper",
+    "type": "1",
+    "require": {
+        "php": ">=7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Yxk\\": "src/",
+            "Yxk\\Helpers\\": "src/Helpers"
+        }
+    },
+    "authors": [
+        {
+            "name": "xingkuiYu",
+            "email": "yuxingkui@qq.com"
+        }
+    ]
+}
