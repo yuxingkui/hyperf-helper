@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Yuxk\Helpers;
 
-class StringHelper
+class ToolHelper
 {
     /**
      *数字金额转换成中文大写金额的函数
@@ -86,11 +86,33 @@ class StringHelper
     }
 
     /**
-     *
+     * 格式化时间戳
      * @return string
      */
     public static function formatDate(): string
     {
         return date('Y-m-d H:i:s');
+    }
+
+    /**
+     * 验证手机号
+     * @param string $phone
+     * @return bool
+     */
+    public static function isPhone(string $phone): bool
+    {
+        if (preg_match("/^1[3456789]{1}\d{9}$/", $phone)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * 毫秒时间戳
+     */
+    public static function millisecond(): string
+    {
+        return (string)(int)(microtime(true) * 1000);
     }
 }
