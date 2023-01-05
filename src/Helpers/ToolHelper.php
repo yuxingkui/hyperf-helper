@@ -87,11 +87,12 @@ class ToolHelper
 
     /**
      * 格式化时间戳
+     * @param string $format
      * @return string
      */
-    public static function formatDate(): string
+    public static function formatDate(string $format = 'Y-m-d H:i:s'): string
     {
-        return date('Y-m-d H:i:s');
+        return date($format);
     }
 
     /**
