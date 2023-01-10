@@ -111,9 +111,19 @@ class ToolHelper
 
     /**
      * 毫秒时间戳
+     * @return string
      */
     public static function millisecond(): string
     {
         return (string)(int)(microtime(true) * 1000);
+    }
+
+    /**
+     * 获取ip地址
+     * @return string
+     */
+    public static function getServerIp(): string
+    {
+        return system("cat /etc/hosts | grep `hostname` | awk '{print $1}'") ?: "127.0.0.1";
     }
 }
