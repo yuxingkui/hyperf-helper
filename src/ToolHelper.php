@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yuxk\Helpers;
+namespace Yuxk\Helper;
 
 class ToolHelper
 {
