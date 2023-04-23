@@ -1,5 +1,5 @@
 {
-    "name": "yuxk/helper",
+    "name": "yuxk/hyperf-helper",
     "license": "MIT",
     "require": {
         "php": ">=7.4"
