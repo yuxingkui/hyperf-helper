@@ -125,21 +125,19 @@ if (false === function_exists('avgRatio')) {
 	}
 }
 
-if (false === function_exists('camelize')) {
-	/**
-	 * 下划线转驼峰
-	 *
-	 * @param        $uncamelized_words
-	 * @param string $separator
-	 *
-	 * @return string
-	 */
-	function camelize($uncamelized_words, $separator = '_')
-	{
-		$uncamelized_words = $separator . str_replace($separator, " ", strtolower($uncamelized_words));
+if (function_exists('camelize') === false) {
+    /**
+     * 下划线转驼峰
+     * @param string $words
+     * @param string $separator
+     * @return string
+     */
+    function camelize(string $words, string $separator = '_'): string
+    {
+        $words = $separator.str_replace($separator, " ", strtolower($words));
 
-		return ltrim(str_replace(" ", "", ucwords($uncamelized_words)), $separator);
-	}
+        return ltrim(str_replace(" ", "", ucwords($words)), $separator);
+    }
 }
 
 if (false === function_exists('unCamelize')) {
