@@ -18,10 +18,6 @@ use Hyperf\Di\Annotation\Aspect;
     )
 ]
 
-/**
- * Class LogAspect
- * @package Bill\Sync\Lib
- */
 class LogAspect extends AbstractAspect
 {
 	use Trace;

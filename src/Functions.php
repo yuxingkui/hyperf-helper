@@ -142,19 +142,17 @@ if (false === function_exists('camelize')) {
 	}
 }
 
-if (false === function_exists('uncamelize')) {
-	/**
-	 *  驼峰命名转下划线命名
-	 *
-	 * @param        $camelCaps
-	 * @param string $separator
-	 *
-	 * @return string
-	 */
-	function uncamelize($camelCaps, $separator = '_')
-	{
-		return strtolower(preg_replace('/([a-z])([A-Z])/', "$1" . $separator . "$2", $camelCaps));
-	}
+if (false === function_exists('unCamelize')) {
+    /**
+     * 驼峰转下划线
+     * @param string $camelCaps
+     * @param string $separator
+     * @return string
+     */
+    function unCamelize(string $camelCaps, string $separator = '_'): string
+    {
+        return strtolower(preg_replace('/([a-z])([A-Z])/', "$1".$separator."$2", $camelCaps));
+    }
 }
 
 if (false === function_exists('arraySplit')) {

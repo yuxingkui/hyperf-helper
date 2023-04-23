@@ -7,12 +7,20 @@
     "autoload": {
         "psr-4": {
             "Yuxk\\Helper\\": "src/"
-        }
+        },
+        "files": [
+            "src/Functions.php"
+        ]
     },
     "authors": [
         {
             "name": "xingkuiYu",
             "email": "yuxingkui@qq.com"
         }
-    ]
+    ],
+    "extra": {
+        "hyperf": {
+            "config": "Sht\\Helper\\ConfigProvider"
+        }
+    }
 }
