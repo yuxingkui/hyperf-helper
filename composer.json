@@ -20,7 +20,7 @@
     ],
     "extra": {
         "hyperf": {
-            "config": "Sht\\Helper\\ConfigProvider"
+            "config": "Yuxk\\Helper\\ConfigProvider"
         }
     }
 }
