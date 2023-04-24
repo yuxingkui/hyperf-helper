@@ -24,7 +24,11 @@ class LogAspect extends AbstractAspect
 
 	public function process(ProceedingJoinPoint $proceedingJoinPoint)
 	{
-		$parentId = \Hyperf\Utils\Coroutine::parentId();
+        try {
+            $parentId = \Hyperf\Utils\Coroutine::parentId();
+        } catch (\RuntimeException $e) {
+
+        }
 		($parentId == -1) && $parentId = null;
 
 		$this->putTraceId($parentId);
