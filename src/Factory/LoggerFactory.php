@@ -28,7 +28,7 @@ class LoggerFactory extends HyperfLoggerFactory
         $logger->pushProcessor(function ($record) {
             $record['extra']['host'] = gethostname();
 
-            $record['extra']['trace_id'] = Context::get('trace_id');
+            $record['extra']['trace_id'] = Context::getOrSet('trace_id', (string)getPkId());
 
             return $record;
         });

@@ -261,7 +261,7 @@ if (!function_exists('apiSucc')) {
 	{
 		return [
 			'code' => 0,
-			'msg'  => 'ok',
+			'message'  => 'ok',
 			'data' => $data,
 		];
 	}
@@ -280,7 +280,7 @@ if (!function_exists('apiErr')) {
 	{
 		return [
 			'code' => $code,
-			'msg'  => $message,
+			'message'  => $message,
 			'data' => [],
 		];
 	}
