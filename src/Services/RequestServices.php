@@ -61,7 +61,7 @@ class RequestServices
     {
         $factory = new HandlerStackFactory();
         $stack = $factory->create([
-        	'max_connections' => self::MAX_CONNECTIONS
+            'max_connections' => self::MAX_CONNECTIONS
         ]);
 
         return make(Client::class, [
@@ -71,129 +71,11 @@ class RequestServices
         ]);
     }
 
-    /**
-     * @param $formatResult
-     * @return $this
-     */
-    public function setFormatResult($formatResult)
-    {
-        $this->formatResult = $formatResult;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFormatResult(): string
-    {
-        return $this->formatResult;
-    }
-
-    /**
-     * @return array
-     */
-    public function getHeader(): array
-    {
-        return $this->header;
-    }
-
-    /**
-     * @param  array $header
-     * @return $this
-     */
-    public function setHeader(array $header)
-    {
-        $this->header = $header;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBody(): string
-    {
-        return $this->body;
-    }
-
-    /**
-     * @param  string $body
-     * @return $this
-     */
-    public function setBody(string $body)
-    {
-        $this->body = $body;
-        return $this;
-    }
-
-    /**
-     * @param $urlConfigStr
-     */
-    private function setUrl($urlConfigStr)
-    {
-        $uriSplit = $this->uriCheck($urlConfigStr);
-        if ($uriSplit) {
-            $this->url = $urlConfigStr;
-
-            return;
-        }
-
-        [$hostStr, $pathStr] = explode('.', $urlConfigStr);
-
-        $this->host = config('hosts.' . $hostStr . '.host');
-        $this->path = config('hosts.' . $hostStr . '.path.' . $pathStr);
-
-        $this->url = rtrim($this->host, '/') . '/' . $this->path;
-    }
-
-    /**
-     * check uri is http/https
-     *
-     * @param string $urlConfigStr
-     *
-     * @return false|int
-     */
-    private function uriCheck($urlConfigStr)
-    {
-        $preg = '/^http(s)?:\\/\\/.+/';
-
-        return preg_match($preg, $urlConfigStr);
-    }
-
     public function __call($method, $params)
     {
         try {
-        	$types = [
-                'post' => 'form_params',
-                'get' => 'query',
-            ];
-            $m = strtolower($method);
-
-            $defaultParams = [
-                '',
-                [],
-                $types[$m] ?? 'query',
-            ];
-
-            //set default
-            $paramsWithDefault = $params + $defaultParams;
-            //assign value
-            [$url, $requestParams, $type] = $paramsWithDefault;
-            //parse url
-            $this->setUrl($url);
-            $url = $this->url;
-            //构造guzzle options
-            $options = [];
-            if ($headers = $this->getHeader()) {
-                $options = array_merge($options, ['headers' => $headers]);
-            }
-
-            if ($body = $this->getBody()) {
-                $options = array_merge($options, ['body' => $body]);
-            }
-
-            if (! empty($requestParams)) {
-                $options = array_merge($options, [$type => $requestParams]);
-            }
+            $url = $params[0];
+            $options = $params[1];
 
             //guzzle handler
             $response = $this->clientFactory->{$method}($url, $options);
