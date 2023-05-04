@@ -59,7 +59,7 @@ class DingTalk implements NotifyInterface
 
         $promise->then(
             function (ResponseInterface $res) {
-                Log::info('Send DingDing Talk[http_code:' . $res->getStatusCode() . '|message:' . $res->getBody()->getContents() . ']');
+                Log::info('Send DingDing Talk[http_code:' . $res->getStatusCode() . '|message:' . $res->getBody()->getContents() . ']',$body);
             },
             function (RequestException $e) {
                 Log::error($e->getMessage());
