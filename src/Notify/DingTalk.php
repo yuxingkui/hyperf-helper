@@ -55,7 +55,7 @@ class DingTalk implements NotifyInterface
                 'content' => $message,
             ]
         ], JSON_UNESCAPED_UNICODE);
-        $promise = $this->client->postAsync($url, ['form_params' => $body]);
+        $promise = $this->client->setFormatResult('none')->postAsync($url, ['form_params' => $body]);
 
         $promise->then(
             function (ResponseInterface $res) {

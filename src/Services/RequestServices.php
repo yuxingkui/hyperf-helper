@@ -12,17 +12,17 @@ use Yuxk\Helper\Log;
 /**
  * http请求
  * Class RequestServices
- * @method array get(string $uri, array $params, string $type = "")
- * @method array head(string $uri, array $params, string $type = "")
- * @method array put(string $uri, array $params, string $type = "")
- * @method array patch(string $uri, array $params, string $type = "")
- * @method array delete(string $uri, array $params, string $type = "")
- * @method array getAsync(string $uri, array $params, string $type = "")
- * @method array headAsync(string $uri, array $params, string $type = "")
- * @method array putAsync(string $uri, array $params, string $type = "")
- * @method array postAsync(string $uri, array $params, string $type = "")
- * @method array patchAsync(string $uri, array $params, string $type = "")
- * @method array deleteAsync(string $uri, array $params, string $type = "")
+ * @method array get(string $uri, array $params = [])
+ * @method array head(string $uri, array $params = [])
+ * @method array put(string $uri, array $params = [])
+ * @method array patch(string $uri, array $params = [])
+ * @method array delete(string $uri, array $params = [])
+ * @method array getAsync(string $uri, array $params = [])
+ * @method array headAsync(string $uri, array $params = [])
+ * @method array putAsync(string $uri, array $params = [])
+ * @method array postAsync(string $uri, array $params = [])
+ * @method array patchAsync(string $uri, array $params = [])
+ * @method array deleteAsync(string $uri, array $params = [])
  */
 class RequestServices
 {
@@ -71,19 +71,38 @@ class RequestServices
         ]);
     }
 
+    /**
+     * @param $formatResult
+     */
+    public function setFormatResult($formatResult)
+    {
+        $this->formatResult = $formatResult;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormatResult(): string
+    {
+        return $this->formatResult;
+    }
+
     public function __call($method, $params)
     {
         try {
             $url = $params[0];
-            $options = $params[1];
+            $options = $params[1] ?? [];
 
             //guzzle handler
             $response = $this->clientFactory->{$method}($url, $options);
+
             if ($this->getFormatResult() == 'array') {
                 $data = $response->getBody()->getContents();
                 return $data ? json_decode($data, true) : [];
             }
             return $response;
+
         } catch (\Throwable $e) {
             Log::error($method, [
                 'param' => $params,
