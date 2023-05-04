@@ -9,6 +9,7 @@ use GuzzleHttp\Exception\RequestException;
 use Hyperf\Contract\ConfigInterface;
 use Psr\Http\Message\ResponseInterface;
 use Yuxk\Helper\Contracts\NotifyInterface;
+use Yuxk\Helper\Ding;
 use Yuxk\Helper\Log;
 use Yuxk\Helper\Services\RequestServices;
 
@@ -25,43 +26,36 @@ class DingTalk implements NotifyInterface
 
     protected $config;
 
+    protected $ding;
     public function __construct()
     {
         $this->client = make(RequestServices::class);
 
+        $this->ding = make(Ding::class);
+
         $this->config = di(ConfigInterface::class);
     }
 
-    public function sendMsg(string $message, $to = '')
+    public function sendMsg(string $message, string $to)
     {
         // 禁用
-        if (! $this->config->get('dingtalk.enable')) {
+        if (! $this->config->get('ding.enable')) {
             return;
         }
 
-        $ms = $this->getMsectime();
-        $sign = $this->getSign($ms);
+        $accessToken = $this->ding->getInstance()->getDingToken();
 
-        $accessToken = $this->config->get('dingtalk.access_token');
+        $url = config('ding.server_host') . config('ding.async_send') . '?access_token=' . $accessToken;
 
-        $to = config('hosts.dingding.host') . config('hosts.dingding.path.robotSend') . '?access_token=' . $accessToken . '&timestamp=' . $ms . '&sign=' . $sign;
-
-        $body = json_encode([
+        $body['agent_id'] = config('ding.agent_id');
+        $body['userid_list'] = $to;
+        $body['msg'] = json_encode([
             'msgtype' => self::MESSAGE_TYPE,
             'text' => [
                 'content' => $message,
-            ],
-            'at' => [
-                'atMobiles' => [],
-                'isAtAll' => true,
-            ],
+            ]
         ], JSON_UNESCAPED_UNICODE);
-
-        $promise = $this->client
-            ->setFormatResult('none')
-            ->setHeader(['content-type' => 'application/json;charset=utf-8'])
-            ->setBody($body)
-            ->postAsync($to, []);
+        $promise = $this->client->postAsync($url, ['form_params' => $body]);
 
         $promise->then(
             function (ResponseInterface $res) {
@@ -72,21 +66,6 @@ class DingTalk implements NotifyInterface
             }
         );
         $promise->wait();
-
         return true;
-    }
-
-    /* 获取密钥 */
-    protected function getSign($timestamp)
-    {
-        $secret = $this->config->get('dingtalk.secret');
-        //把timestamp+"\n"+密钥当做签名字符串，使用HmacSHA256算法计算签名，然后进行Base64 encode，最后再把签名参数再进行urlEncode，得到最终的签名
-        return urlencode(base64_encode(hash_hmac('sha256', $timestamp . "\n" . $secret, $secret, true)));
-    }
-
-    protected function getMsectime()
-    {
-        $microtimeArr = explode(' ', microtime());
-        return (float) sprintf('%.0f', (floatval($microtimeArr[0]) + floatval($microtimeArr[1])) * 1000);
     }
 }
