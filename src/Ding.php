@@ -9,6 +9,14 @@ use Yuxk\Helper\Redis;
 use http\Exception\RuntimeException;
 use Yuxk\Helper\Services\RequestServices;
 
+/**
+ * http请求
+ * Class Ding
+ * @method array postDeptChildList(array $body = [])
+ * @method array postCreateApproval(array $body = [])
+ * @method array postUserInfoByMobile(array $body = [])
+ * @method array postProcessInstanceGet(array $body = [])
+ */
 class Ding
 {
     private static $_instance;
@@ -28,10 +36,12 @@ class Ding
     public array $config;
 
     public static string $token_url = '/gettoken';//获取token
-    public static string $createProcessInstance = '/topapi/processinstance/create';//发起审批实例
-    public static string $getProcessInstance = '/topapi/processinstance/get';//获取单个审批实例详情
 
-    public static string $getUserInfoByMobile = '/topapi/v2/user/getbymobile'; //根据手机号获取用户信息
+
+    public const POST_DEPT_CHILD_LIST = '/topapi/v2/department/listsubid'; //获取子部门ID列表
+    public const POST_CREATE_APPROVAL = '/topapi/processinstance/create';//发起审批实例
+    public const POST_USER_INFO_BY_MOBILE = '/topapi/v2/user/getbymobile'; //根据手机号获取用户信息
+    public const POST_PROCESS_INSTANCE_GET = '/topapi/processinstance/get';//获取单个审批实例详情
 
     public function __construct()
     {
@@ -84,62 +94,6 @@ class Ding
         return $accessToken;
     }
 
-    public function getUserId(string $mobile): string
-    {
-        //请求地址
-        $url = self::$serverHost.self::$getUserInfoByMobile.'?access_token='.self::getDingToken();
-
-        $requestParam['json'] =  ['mobile' => $mobile];
-
-        $response = $this->client->request('POST', $url, $requestParam);
-
-
-        if (empty($response) || $response['errcode'] != 0) {
-            Log::error('钉钉接口错误', [$response]);
-            throw new \RuntimeException('钉钉接口错误', ErrorCode::HTTP_API_SERVICE_ERROR);
-        }
-
-        return $response['result']['userid'];
-    }
-
-
-    //发起钉钉审批流程
-    public  function createApproval(array $content) :string
-    {
-        //请求地址
-        $url = self::$serverHost.self::$createProcessInstance.'?access_token='.self::getDingToken();
-
-        $requestParam['json'] =  $content;
-
-        $response = $this->client->request('POST', $url, $requestParam);
-
-        if (empty($response) || $response['errcode'] != 0) {
-            Log::error('钉钉接口错误', [$response]);
-            throw new \RuntimeException('钉钉接口错误', ErrorCode::HTTP_API_SERVICE_ERROR);
-        }
-
-        return $response['process_instance_id']; //审批实例
-    }
-
-    public function getDetails(string $processInstanceId): array
-    {
-        $url = self::$serverHost . self::$getProcessInstance . '?access_token='
-            . self::getDingToken();
-        $requestParam['json'] = ['process_instance_id' => $processInstanceId];
-
-        $response = $this->client->request('POST', $url, $requestParam);
-
-        if (empty($response) || $response['errcode'] != 0) {
-            Log::error('钉钉接口错误', [$response]);
-            throw new RuntimeException(
-                '钉钉接口错误',
-                ErrorCode::HTTP_API_SERVICE_ERROR
-            );
-        }
-
-        return $response['process_instance'];
-    }
-
 
     public function __call(string $name, array $arguments = [])
     {
@@ -147,11 +101,13 @@ class Ding
 
         try {
 
+            $method = explode('_', unCamelize($name))[0];
+
             $url = self::$serverHost.constant('self::'.strtoupper(unCamelize($name)));
 
-            $url = $url.'?access_token='.self::getDingToken();
+            $url .= '?access_token='.self::getDingToken();
 
-            $response = $this->client->request('POST', $url, $requestParam);
+            $response = $this->client->{$method}($url, $requestParam);
 
         } catch (\Exception $e) {
             if (empty($response) || $response['errcode'] != 0) {
