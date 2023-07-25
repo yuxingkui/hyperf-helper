@@ -15,7 +15,14 @@ use Yuxk\Helper\Services\RequestServices;
 
 class DingTalk implements NotifyInterface
 {
-    const MESSAGE_TYPE = 'text';
+    const MESSAGE_TYPE_TEXT = 'text';
+    const MESSAGE_TYPE_LINK = 'link';
+    const MESSAGE_TYPE_IMAGE = 'image';
+    const MESSAGE_TYPE_VOICE = 'voice';
+    const MESSAGE_TYPE_FILE = 'file';
+    const MESSAGE_TYPE_OA = 'oa';
+    const MESSAGE_TYPE_MARKDOWN = 'markdown';
+    const MESSAGE_TYPE_ACTION_CARD = 'action_card';
 
     const TIME_OUT = 2;
 
@@ -36,7 +43,7 @@ class DingTalk implements NotifyInterface
         $this->config = di(ConfigInterface::class);
     }
 
-    public function sendMsg(string $message, string $to)
+    public function sendMsg(string $msgType, array $message, string $to)
     {
         // 禁用
         if (! $this->config->get('ding.enable')) {
@@ -49,12 +56,11 @@ class DingTalk implements NotifyInterface
 
         $body['agent_id'] = config('ding.agent_id');
         $body['userid_list'] = $to;
-        $body['msg'] = json_encode([
-            'msgtype' => self::MESSAGE_TYPE,
-            'text' => [
-                'content' => $message,
-            ]
-        ], JSON_UNESCAPED_UNICODE);
+        $body['msg'] = json_encode(
+            array_merge(['msgtype' => $msgType], ["$msgType" => $message]),
+            JSON_UNESCAPED_UNICODE
+        );
+
         $promise = $this->client->setFormatResult('none')->postAsync($url, ['form_params' => $body]);
 
         $promise->then(
