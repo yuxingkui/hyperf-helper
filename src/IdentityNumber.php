@@ -32,19 +32,19 @@ class IdentityNumber
     }
 
 
-    private function check(): bool
+    private function check(): void
     {
         // 只能是18位
         if (strlen(self::$idCard) != 18) {
-            return $this->isIdCard;
+            return;
         }
 
         if (!preg_match('/^([\d]{17}[xX\d]|[\d]{15})$/', self::$idCard)) {
-            return $this->isIdCard;
+            return;
         }
 
         if (!in_array(substr(self::$idCard, 0, 2), self::$cityCode)) {
-            return $this->isIdCard;
+            return;
         }
 
         // 取出本体码
@@ -64,15 +64,13 @@ class IdentityNumber
 
         // 比较校验码
         if ($verifyCode != self::$verifyCodeList[$mod]) {
-            return false;
+            return;
         }
 
         $this->isIdCard = true;
 
         $this->age = (int)date('Y') - (int)substr(self::$idCard, 6, 4);
         $this->sex = (int)substr(self::$idCard, 16, 1) % 2 ? 1 : 2;
-
-        return $this->isIdCard;
 
     }
 
