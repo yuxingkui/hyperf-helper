@@ -42,6 +42,7 @@ class Ding
     public const POST_CREATE_APPROVAL = '/topapi/processinstance/create';//发起审批实例
     public const POST_USER_INFO_BY_MOBILE = '/topapi/v2/user/getbymobile'; //根据手机号获取用户信息
     public const POST_PROCESS_INSTANCE_GET = '/topapi/processinstance/get';//获取单个审批实例详情
+    public const POST_USER_LIST_BY_DEPT = '/topapi/v2/user/list';//获取部门详情
 
     public function __construct()
     {
